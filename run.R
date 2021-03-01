@@ -4,6 +4,7 @@ source("rsm.R") # functions to be used in the RSM procedure
 source("data_generation.R") # daga generation
 
 # Generate the data
+set.seed(12345)
 sim_data = data_generation(n=300, j=100, index=c(1,2,3), ntrain=100)
 
 Y_train = sim_data$Y_tr # generated scalar response (training sample)
@@ -19,7 +20,7 @@ rsm_model = regRSM(y = Y_train, x = projections, B = 1000)
 empt_mat = rep(NA, npls*length(X_train))
 empt_mat[sort(rsm_model$model)] = sort(rsm_model$model)
 empt_mat = matrix(empt_mat, nrow = length(X_train), ncol = npls, byrow = TRUE)
-variable_indices = which(rowSums(empt_mat, na.rm = T) > 0) # selected variables
+variable_indices = which(rowSums(empt_mat, na.rm = T) > 0) # selected variables (X1, X2, X3)
 
 # Selected functional predictors
 Xs_train = list()
@@ -33,5 +34,4 @@ for(i in 1:length(variable_indices)){
 fmodel = bsq_fun(Y = Y_train, X = Xs_train, X_test = Xs_test, npls = 5)
 
 # MSPE
-mean((Y_test - fmodel$preds)^2)
-
+mean((Y_test - fmodel$preds)^2) # MSE = 1.666908 computed under selected model
