@@ -55,7 +55,7 @@ data_generation = function(n, j, index, ntrain){
     fX[[5]] = V[[2]]+10
     
     vBeta = list()
-    vBeta[[1]] = 2*sin(2*pi * s)
+    vBeta[[1]] = sqrt(s)
     vBeta[[2]] = exp(-(s - 0.5)^2)
     vBeta[[3]] = 2*cos(pi * s)
     vBeta[[4]] = exp(-(s^2))
@@ -79,6 +79,6 @@ data_generation = function(n, j, index, ntrain){
       X_test[[ij]] = fX[[ij]]$data[-(1:ntrain),]
     }
     
-    return(list("Y_tr" = fYe[1:ntrain,], "Y_te" = fYe[-(1:ntrain),], "X_tr" = X_train, "X_te" = X_test))
+    return(list("Y_tr" = fYe[1:ntrain,], "Y_te" = fYe[-(1:ntrain),], "X_tr" = X_train, "X_te" = X_test, tcoefs = vBeta))
     
 }
