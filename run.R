@@ -38,11 +38,11 @@ rpls_full = main_fun(Y = Y_train, X_tr = X_train, X_te = X_test, nfold = 2, npls
                     method = "robust", model = "full", CV = TRUE)
 
 # FPLS (True model)
-pls_true = main_fun(Y = Y_train, X_tr = X_train, X_te = X_test, nfold = 2, npls_max = 5, nbf = nbf,
+pls_true = main_fun(Y = Y_train, X_tr = X_train, X_te = X_test, t_index = c(1,2,3), nfold = 2, npls_max = 5, nbf = nbf,
                     method = "classical", model = "true", CV = TRUE)
 
 # RFPLS (True model)
-rpls_true = main_fun(Y = Y_train, X_tr = X_train, X_te = X_test, nfold = 2, npls_max = 5, nbf = nbf,
+rpls_true = main_fun(Y = Y_train, X_tr = X_train, X_te = X_test, t_index = c(1,2,3), nfold = 2, npls_max = 5, nbf = nbf,
                      method = "robust", model = "true", CV = TRUE)
 
 # FPLS (Selected model)
