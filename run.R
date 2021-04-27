@@ -14,6 +14,8 @@ Y_test = sim_data$Y_te # generated scalar response (test sample)
 X_train = sim_data$X_tr # generated functional predictors (training sample)
 X_test = sim_data$X_te # generated functional predictors (test sample)
 
+# In the following, the generated data are contaminated by outliers.
+# To evaluate the methods when no outliers present in the data, ignore lines 20-27
 # Outliers
 nout = 0.2 * length(Y_train)
 out_indx = sample(1:length(Y_train), nout, replace=FALSE)
