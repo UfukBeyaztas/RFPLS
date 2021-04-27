@@ -5,6 +5,7 @@ source("data_generation.R")
 source("data_generation2.R")
 
 # Generate the data
+set.seed(12345)
 sim_data = data_generation(n=400, j=200, index=c(1,2,3), ntrain=200)
 sim_data2 = data_generation2(n=400, j=200, index=c(1,2,3), ntrain=200)
 
@@ -54,34 +55,34 @@ rpls_selected = main_fun(Y = Y_train, X_tr = X_train, X_te = X_test, nfold = 2, 
                      method = "robust", model = "selected", CV = TRUE)
 
 # Selected variables
-pls_selected$var_used
-rpls_selected$var_used
+pls_selected$var_used # 1 2 3
+rpls_selected$var_used # 1 2 3
 
 
 # MSPE
 # Full model
-mean((Y_test - pls_full$predictions)^2)
-mean((Y_test - rpls_full$predictions)^2)
+mean((Y_test - pls_full$predictions)^2) # 15.71499
+mean((Y_test - rpls_full$predictions)^2) # 1.114651
 # True model
-mean((Y_test - pls_true$predictions)^2)
-mean((Y_test - rpls_true$predictions)^2)
+mean((Y_test - pls_true$predictions)^2) # 13.79177
+mean((Y_test - rpls_true$predictions)^2) # 1.016986
 # Selected model
-mean((Y_test - pls_selected$predictions)^2)
-mean((Y_test - rpls_selected$predictions)^2)
+mean((Y_test - pls_selected$predictions)^2) # 13.79177
+mean((Y_test - rpls_selected$predictions)^2) # 1.016986
 
 
 # R^2
 # Full model
-cor(Y_test, pls_full$predictions)^2
-cor(Y_test, rpls_full$predictions)^2
+cor(Y_test, pls_full$predictions)^2 # 0.8713045
+cor(Y_test, rpls_full$predictions)^2 # 0.962391
 
 # True model
-cor(Y_test, pls_true$predictions)^2
-cor(Y_test, rpls_true$predictions)^2
+cor(Y_test, pls_true$predictions)^2 # 0.9032042
+cor(Y_test, rpls_true$predictions)^2 # 0.965603
 
 # Selected model
-cor(Y_test, pls_selected$predictions)^2
-cor(Y_test, rpls_selected$predictions)^2
+cor(Y_test, pls_selected$predictions)^2 # 0.9032042
+cor(Y_test, rpls_selected$predictions)^2 # 0.965603
 
 # IMSE
 imse_pls1 = numeric()
@@ -92,5 +93,5 @@ for(ims in 1:3){
   imse_rpls1[ims] = mean((c(sim_data$tcoefs[[ims]]$data) - c(rpls_true$coefficients[[ims]]))^2)
 }
 
-mean(imse_pls1)
-mean(imse_rpls1)
+mean(imse_pls1) # 1.28778
+mean(imse_rpls1) # 0.4805382
