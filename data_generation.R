@@ -33,52 +33,52 @@ data_generation = function(n, j, index, ntrain){
     z = matrix(rnorm(n.comp.sigma*n, 0,1), n.comp.sigma, n)
     V[[i]] = t(sigma.5 %*% z )
   }
+  
+  
+  fX = list()
+  for(ij in 1:3){
     
-    
-    fX = list()
-    for(ij in 1:3){
-      
-      ksi = list()
-      for(ik in 1:5){
-        ksi[[ik]] = rnorm(n, 0, sd = (4*ik^(-3/2)))
-      }
-      
-      phi = list()
-      for(ik in 1:5){
-        phi[[ik]] = sin(ik * pi * s) - cos(ik * pi * s)
-      }
-      
-      fX[[ij]] = Reduce("+", lapply(1:5, function(k){ksi[[k]] %*% t(phi[[k]])}))
+    ksi = list()
+    for(ik in 1:5){
+      ksi[[ik]] = rnorm(n, 0, sd = (4*ik^(-3/2)))
     }
     
-    fX[[4]] = V[[1]]+10
-    fX[[5]] = V[[2]]+10
-    
-    vBeta = list()
-    vBeta[[1]] = sqrt(s)
-    vBeta[[2]] = exp(-(s - 0.5)^2)
-    vBeta[[3]] = 2*cos(pi * s)
-    vBeta[[4]] = exp(-(s^2))
-    vBeta[[5]] = 2 * sqrt(s)
-      
-        for(ij in 1:5){
-      fX[[ij]] = fdata(fX[[ij]], argvals = s)
-      vBeta[[ij]] = fdata(vBeta[[ij]], argvals = s)
-        }
-    
-    err = rnorm(n, mean=0, sd=1)
-    
-    fY = Reduce("+", lapply(1:length(index), function(k){inprod.fdata(fX[[index[k]]], vBeta[[index[k]]])})) 
-    fYe = fY + err
-
-    X_train = list()
-    X_test = list()
-    
-    for(ij in 1:5){
-      X_train[[ij]] = fX[[ij]]$data[1:ntrain,]
-      X_test[[ij]] = fX[[ij]]$data[-(1:ntrain),]
+    phi = list()
+    for(ik in 1:5){
+      phi[[ik]] = sin(ik * pi * s) - cos(ik * pi * s)
     }
     
-    return(list("Y_tr" = fYe[1:ntrain,], "Y_te" = fYe[-(1:ntrain),], "X_tr" = X_train, "X_te" = X_test, tcoefs = vBeta))
-    
+    fX[[ij]] = Reduce("+", lapply(1:5, function(k){ksi[[k]] %*% t(phi[[k]])}))
+  }
+  
+  fX[[4]] = V[[1]]+10
+  fX[[5]] = V[[2]]+10
+  
+  vBeta = list()
+  vBeta[[1]] = sqrt(s)
+  vBeta[[2]] = exp(-(s - 0.5)^2)
+  vBeta[[3]] = 2*cos(pi * s)
+  vBeta[[4]] = exp(-(s^2))
+  vBeta[[5]] = 2 * sqrt(s)
+  
+  for(ij in 1:5){
+    fX[[ij]] = fdata(fX[[ij]], argvals = s)
+    vBeta[[ij]] = fdata(vBeta[[ij]], argvals = s)
+  }
+  
+  err = rnorm(n, mean=0, sd=1)
+  
+  fY = Reduce("+", lapply(1:length(index), function(k){inprod.fdata(fX[[index[k]]], vBeta[[index[k]]])})) 
+  fYe = fY + err
+  
+  X_train = list()
+  X_test = list()
+  
+  for(ij in 1:5){
+    X_train[[ij]] = fX[[ij]]$data[1:ntrain,]
+    X_test[[ij]] = fX[[ij]]$data[-(1:ntrain),]
+  }
+  
+  return(list("Y_tr" = fYe[1:ntrain,], "Y_te" = fYe[-(1:ntrain),], "X_tr" = X_train, "X_te" = X_test, tcoefs = vBeta))
+  
 }
