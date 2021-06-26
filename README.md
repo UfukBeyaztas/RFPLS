@@ -1,5 +1,5 @@
 This repo contains the code used in the simulations in the "A robust functional partial least squares for scalar-on-function regression"
-paper submitted to the Chemometrics and Intelligent Laboratory Systems. 
+paper. 
 # Authors
 Ufuk Beyaztas and Han Lin Shang
 # Procedure
