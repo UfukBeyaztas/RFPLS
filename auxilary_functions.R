@@ -76,7 +76,7 @@ fpls_fun = function(Y, X_tr, X_te, npls, method = c("classical", "robust")){
   M = numeric()
   for(im in 1:np)
     M[im] = dim(X_tr[[im]])[2]
-
+  
   pred_vals = list()
   fit_vals = list()
   coef_mat = list()
@@ -161,7 +161,7 @@ getCoef = function(object, plsComps, coefs){
   Inn_prd_sqrts = object$InnProds
   np = length(Amats)
   npls = dim(plsComps[[1]])[2]
-
+  
   
   B0 = coefs[1]
   Brest = matrix(coefs[-1], ncol = npls, byrow = TRUE)
@@ -232,11 +232,11 @@ fpca_est = function(Y, sco_X){
 
 fpca = function(Y, X_tr, X_te, npca, nbf, rangeval){
   np = length(X_tr)
-
+  
   fpca_X = list()
   for(fij in 1:np){
     fpca_X[[fij]] = getPCA(X_tr = X_tr[[fij]], X_te = X_te[[fij]],
-                              nbasis = nbf[fij],  ncomp = npca, rangeval = rangeval[[fij]])
+                           nbasis = nbf[fij],  ncomp = npca, rangeval = rangeval[[fij]])
   }
   
   sco_tr = list()
@@ -246,7 +246,7 @@ fpca = function(Y, X_tr, X_te, npca, nbf, rangeval){
     sco_te[[i]] = fpca_X[[i]]$PCAscore_test
   }
   
-
+  
   Bhat = fpca_est(Y = Y, sco_X = do.call(cbind, sco_tr))
   fits = cbind(1, do.call(cbind, sco_tr)) %*% Bhat
   preds =  cbind(1, do.call(cbind, sco_te)) %*% Bhat
@@ -277,7 +277,7 @@ getCoef_fpca = function(object, npca){
   V = list()
   for(i in 1:np)
     V[[i]] = comp_X[[i]]
-
+  
   Cf = list()
   km = 1
   for(i in 1:np){
@@ -434,7 +434,6 @@ BIC_nc_pca = function(Y, X, npca_max, nbf = nbf,
 
 #__________________________________________________________________________________________
 #__________________________________________________________________________________________
-
 
 
 #_____________________________________________________
