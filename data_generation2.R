@@ -55,9 +55,9 @@ data_generation2 = function(n, j, index, ntrain){
   fX[[5]] = V[[2]]+10
   
   vBeta = list()
-  vBeta[[1]] = 6*sqrt(s)
-  vBeta[[2]] = 4*exp(-(s - 0.5)^2)
-  vBeta[[3]] = 5*cos(pi * s)
+  vBeta[[1]] = 4*sqrt(s)
+  vBeta[[2]] = 2*exp(-(s - 0.5)^2)
+  vBeta[[3]] = 3*cos(pi * s)
   vBeta[[4]] = exp(-(s^2))
   vBeta[[5]] = 2 * sqrt(s)
   
