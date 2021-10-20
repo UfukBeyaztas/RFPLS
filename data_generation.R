@@ -55,11 +55,11 @@ data_generation = function(n, j, index, ntrain){
   fX[[5]] = V[[2]]+10
   
   vBeta = list()
-  vBeta[[1]] = sqrt(s)
-  vBeta[[2]] = exp(-(s - 0.5)^2)
-  vBeta[[3]] = 2*cos(pi * s)
-  vBeta[[4]] = exp(-(s^2))
-  vBeta[[5]] = 2 * sqrt(s)
+  vBeta[[1]] = sin(4*pi* s)
+  vBeta[[2]] = exp((s-0.5)^3) * sin(3*pi* s)
+  vBeta[[3]] = cos(4*pi * s)
+  vBeta[[4]] = 0.5*exp(-s^2)
+  vBeta[[5]] = 0.5*exp(-(s+1)^2)
   
   for(ij in 1:5){
     fX[[ij]] = fdata(fX[[ij]], argvals = s)
