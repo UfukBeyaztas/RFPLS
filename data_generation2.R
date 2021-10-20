@@ -45,7 +45,7 @@ data_generation2 = function(n, j, index, ntrain){
     
     phi = list()
     for(ik in 1:5){
-      phi[[ik]] = sin(ik * pi * s) - cos(ik * pi * s)
+      phi[[ik]] = 2*sin(ik * pi * s) - cos(ik * pi * s)
     }
     
     fX[[ij]] = Reduce("+", lapply(1:5, function(k){ksi[[k]] %*% t(phi[[k]])}))
@@ -55,18 +55,18 @@ data_generation2 = function(n, j, index, ntrain){
   fX[[5]] = V[[2]]+10
   
   vBeta = list()
-  vBeta[[1]] = 4*sqrt(s)
-  vBeta[[2]] = 2*exp(-(s - 0.5)^2)
-  vBeta[[3]] = 3*cos(pi * s)
-  vBeta[[4]] = exp(-(s^2))
-  vBeta[[5]] = 2 * sqrt(s)
+  vBeta[[1]] = sin(4*pi* s)
+  vBeta[[2]] = exp((s-0.5)^3) + sin(3*pi* s)
+  vBeta[[3]] = cos(4*pi * s)
+  vBeta[[4]] = 0.5*exp(-s^2)
+  vBeta[[5]] = 0.5*exp(-(s+1)^2)
   
   for(ij in 1:5){
     fX[[ij]] = fdata(fX[[ij]], argvals = s)
     vBeta[[ij]] = fdata(vBeta[[ij]], argvals = s)
   }
   
-  err = rnorm(n, mean=0, sd=1)
+  err = rnorm(n, mean=10, sd=1)
   
   fY = Reduce("+", lapply(1:length(index), function(k){inprod.fdata(fX[[index[k]]], vBeta[[index[k]]])})) 
   fYe = fY + err
