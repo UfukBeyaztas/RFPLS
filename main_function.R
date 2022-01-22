@@ -1,4 +1,4 @@
-main_fun = function(Y, X_tr, X_te, t_index, npls_max, npca_max, nbf, nfold, ncp_vs, rangeval,
+main_fun = function(Y, X_tr, X_te, t_index, npls_max, npca_max, nbf, nfold, rangeval,
                     method = c("classical", "robust"), fmethod = c("fpls", "fpca")){
   
   # Y is a vector of scalar response
@@ -9,7 +9,6 @@ main_fun = function(Y, X_tr, X_te, t_index, npls_max, npca_max, nbf, nfold, ncp_
   # npca_max is the maximum number of PCA components
   # nbf is the number of basis functions to estimate scalar-on-function regression model
   # nfold is the value of "k" in the k-fold cross-validation
-  # ncp_vs is a vector containing number of components for each functional predictor used in the variable selection procedure
   # rangeval is a list containing the interval values where the functional dataset is evaluated
   # fmethod is a selection to indicate whether to use  FPLS or FPCA
   
