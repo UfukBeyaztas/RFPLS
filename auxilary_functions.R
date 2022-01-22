@@ -4,11 +4,13 @@
 library(MASS)
 library(fda)
 library(expm)
-library(regRSM)
 library(robustX)  
 library(matrixStats)
 library(sprm)
 library(rlmDataDriven)
+library(pls)
+library(wle)
+library(plsgenomics)
 #_____________________
 #_____________________
 
@@ -44,11 +46,11 @@ getAmat = function(X_tr, X_te, nbf, rangeval){
     Amat_tr[[i]] = t(fdobj_tr$coefs) %*% InnProds[[i]]
     Amat_te[[i]] = t(fdobj_te$coefs) %*% InnProds[[i]]
   }
-  
+
   return(list(Amat_tr = Amat_tr, Amat_te = Amat_te,
               Bsp_funs = Bsp_funs, InnProds = InnProds))
 }
-
+  
 #_____________________________________________________________________________________________________________________________
 #_____________________________________________________________________________________________________________________________
 
@@ -60,6 +62,7 @@ getAmat = function(X_tr, X_te, nbf, rangeval){
 simpls = function(X, Xt, Y, a){
   Y = as.matrix(Y)
   n = nrow(X)
+  nt = nrow(Xt)
   k = ncol(X)
   m = ncol(Y)
   
@@ -67,7 +70,7 @@ simpls = function(X, Xt, Y, a){
   Cs = matrix(0, m, a)
   Rs = matrix(0, k, a)
   Ts = matrix(0, n, a)
-  Tst = matrix(0, n, a)
+  Tst = matrix(0, nt, a)
   
   mx = apply(X, 2, mean)
   mxt = apply(Xt, 2, mean)
@@ -393,8 +396,8 @@ prms2 = function (formula, data, Xt, a, fun="Hampel", probp1 = .95, hampelp2 = .
   output = list(scores = Tpls, scoresT = Tplst, R=R, loadings = P)
   return(output)
 }
-
-
+  
+  
 #_________________________________________________________________________________________________________________________________________________________________________
 #______________________________________________________________________________FPLS_function______________________________________________________________________________
 #_________________________________________________________________________________________________________________________________________________________________________
@@ -405,7 +408,7 @@ fpls_fun = function(Y, X_tr, X_te, nbf, npls, rangeval, method = c("classical", 
   X_te = getMat$Amat_te
   Bsp_funs = getMat$Bsp_funs
   InnProds = getMat$InnProds
-  
+
   np = length(X_tr)
   N = dim(X_tr[[1]])[1]
   M = numeric()
@@ -451,7 +454,7 @@ fpls_fun = function(Y, X_tr, X_te, nbf, npls, rangeval, method = c("classical", 
   
   fitted_values = do.call(cbind, comps) %*% coefs + intercept
   pred_vals = do.call(cbind, comps_test) %*% coefs + intercept
-  
+
   return(list(fits = fitted_values, preds = pred_vals, coefs = coefs, plsbase = base, plsscore = comps,
               Bsp_funs = Bsp_funs, InnProds = InnProds))
 }
@@ -601,44 +604,6 @@ getCoef_fpca = function(object, npca){
 #__________________________________________________________________________________________
 #__________________________________________________________________________________________
 
-
-#__________________________________________________________________________________________
-#______________________________________Variable_selection__________________________________
-#__________________________________________________________________________________________
-var_select = function(Y, X, nbf, ncp, rangeval, method, fmethod){
-  np = length(X)
-  
-  if(fmethod == "fpca"){
-    Dmat = list()
-    for(i in 1:np)
-      Dmat[[i]] = getPCA(X_tr = X[[i]], X_te = X[[i]], nbasis = nbf[[i]], ncomp = ncp[[i]], rangeval = rangeval[[i]])$PCAscore
-    Dmat = do.call(cbind, Dmat)
-  }
-  if(fmethod == "fpls"){
-    Dmat = do.call(cbind,
-                   fpls_fun(Y = Y, X_tr = X, X_te = X, nbf = nbf, npls = ncp[1], rangeval = rangeval, method = method)$plsscore)
-  }
-  rsm_model = regRSM(y = Y, x = Dmat, B = 1000)
-  empt_mat = rep(NA, sum(ncp))
-  empt_mat[sort(rsm_model$model)] = sort(rsm_model$model)
-  mat_list = list()
-  mat_list[[1]] = empt_mat[1:ncp[1]]
-  ik = ncp[1]
-  for(i in 2:np){
-    mat_list[[i]] = empt_mat[(ik+1):(ik+ncp[i])]
-    ik = ik + ncp[i]
-  }
-  mat_ind = matrix(NA, ncol = 1, nrow = np)
-  for(i in 1:np)
-    mat_ind[i,] = sum(mat_list[[i]], na.rm = TRUE)
-  variable_indices = which(rowSums(mat_ind, na.rm = T) > 0)
-  
-  return(variable_indices)
-}
-#__________________________________________________________________________________________
-#__________________________________________________________________________________________
-
-
 #_____________________________________________________
 #_______________________Trimmed_MSE___________________
 #_____________________________________________________
@@ -719,10 +684,6 @@ nfoldCV = function(Y, X, ncomp, nfold, nbf, rangeval, method = c("classical", "r
       }
       preds_k[[k]] = fold_res$preds
     }
-    
-    
-    
-    
     
     mspe_i = numeric()
     for(k in 1: ncomp)
